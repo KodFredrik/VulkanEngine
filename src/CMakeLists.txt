@@ -4,6 +4,8 @@ vk_engine.h
 vk_engine.cpp
 )
 
+target_link_libraries(engine vk-bootstrap)
 set_property(TARGET engine PROPERTY CXX_STANDARD 20)
-#target_include_directories(engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 #target_compile_definitions(engine PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
+
