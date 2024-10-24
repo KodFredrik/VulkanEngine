@@ -8,5 +8,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 PRIVATE
 vk-bootstrap::vk-bootstrap
 GPUOpen::VulkanMemoryAllocator
+SDL3::SDL3
 )
 add_subdirectory(src)
