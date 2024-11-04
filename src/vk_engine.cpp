@@ -33,7 +33,7 @@ void VulkanEngine::init()
     // We initialize SDL and create a window with it.
     SDL_Init(SDL_INIT_VIDEO);
     //set flags for what we want to use in SDL. These include windowing and mouse and keyboard input. 
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_VULKAN);
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
 
     m_window_ptr = SDL_CreateWindow(
         "Vulkan Engine",
@@ -58,48 +58,39 @@ void VulkanEngine::cleanup()
 
 void VulkanEngine::run()
 {
-    SDL_Event e;
-    bool bQuit = false;
+    SDL_Event event;
+    bool Quit = false;
     
-    //SDL_Event testevent;
-    //testevent.type = SDL_EVENT_WINDOW_MINIMIZED;
-
     // main loop
-    while (!bQuit) {
+    while (!Quit) 
+    {
         // Handle events on queue
-        while (SDL_PollEvent(&e) != 0) 
+        while (SDL_PollEvent(&event) != 0) 
         {
-            //std::cout << e.type << std::endl;
-            printf("%d\n", e.type);
-            // close the window when user alt-f4s or clicks the X button
-            if (e.type == SDL_EVENT_QUIT)
+            //Quit loop when user clicks X on window or alt+f4. Stop rendering if window is not in focus on screen.
+            switch(event.type)
             {
-                printf("quit");
-                bQuit = true;
+                case SDL_EVENT_QUIT:
+                    Quit = true;
+                    break;
+                case SDL_EVENT_WINDOW_FOCUS_LOST:
+                    stop_rendering = true;
+                    break;
+                case SDL_EVENT_WINDOW_FOCUS_GAINED:
+                    stop_rendering = false;
+                    break;
             }
-            if (e.window.type == SDL_EVENT_WINDOW_MINIMIZED) 
+        }
+            // do not draw if we are out of focus
+            switch (stop_rendering)
             {
-                printf("minimized");
-                stop_rendering = true;
+                case true:
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    break;
+                case false:
+                    draw();
+                    break;
             }
-            if (e.window.type == SDL_EVENT_WINDOW_RESTORED) 
-            {
-                printf("restored");
-                stop_rendering = false;
-            }
-            //SDL_PushEvent(&testevent);
-        }
-        // do not draw if we are minimized
-        if (stop_rendering) 
-        {
-            // throttle the speed to avoid the endless spinning
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            continue;
-        }
-        else
-        {
-            draw();
-        }
     }
 }
 
