@@ -70,10 +70,6 @@ void VulkanEngine::run()
         // Handle events on queue
         while (SDL_PollEvent(&event) != 0) 
         {
-            if (event.type != 1024)
-            {
-            printf("%d \n", event.type);                
-            }
             //Quit loop when user clicks X on window or alt+f4. Stop rendering if window is not in focus on screen.
             switch(event.type)
             {
